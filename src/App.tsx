@@ -1,17 +1,8 @@
-import './App.scss';
 import React from 'react';
+import './App.scss';
 
-const objecto = {
-  objeto: 'string',
-  objeto2: 2,
-};
-
-const funcion = (a: string) => {
-  return a;
-};
-
-function App() {
+const App: React.FC = () => {
   return <div className="App">Test</div>;
-}
+};
 
 export default App;
