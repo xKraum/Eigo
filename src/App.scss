@@ -1,0 +1,23 @@
+@import './utils/styles/variables';
+
+.App {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .content {
+    margin: $content-margin-default;
+  }
+
+  .layout-wrapper .content {
+    margin: $content-margin-layout-mobile;
+  }
+
+  // Media query for desktop view
+  @media only screen and (min-width: 768px) {
+    .layout-wrapper .content {
+      margin: $content-margin-layout-desktop;
+    }
+  }
+}

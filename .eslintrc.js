@@ -48,5 +48,8 @@ module.exports = {
         unnamedComponents: 'arrow-function',
       },
     ],
+
+    // Enforce default arguments for optional props.
+    'react/require-default-props': ['error', { functions: 'defaultArguments' }],
   },
 };
