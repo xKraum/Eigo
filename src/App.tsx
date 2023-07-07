@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './App.scss';
-import Layout from './components/layout/Layout';
+import Layout from './components/navigation-layout/NavigationLayout';
 
 const App: React.FC = () => {
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isUserLoggedIn = true;
 
   useEffect(() => {

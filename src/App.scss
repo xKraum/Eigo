@@ -14,6 +14,14 @@
     margin: $content-margin-layout-mobile;
   }
 
+  .primary {
+    color: $primary-color;
+  }
+
+  .secondary {
+    color: $secondary-color;
+  }
+
   // Media query for desktop view
   @media only screen and (min-width: 768px) {
     .layout-wrapper .content {
