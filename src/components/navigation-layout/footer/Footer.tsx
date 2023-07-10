@@ -4,25 +4,27 @@ import Icon from '../../icon-button/icon/Icon';
 import './Footer.scss';
 
 interface Footer {
-  pages: { label: string; path?: string; icon: string }[];
-  selectedPage: number;
-  handleNavigationClick: (index: number) => any;
+  pages: { name: string; path: string; icon: string }[];
+  selectedPagePathName: string;
+  handleNavigationClick: (pathName: string) => any;
 }
 
 const Footer: React.FC<Footer> = ({
   pages,
-  selectedPage,
+  selectedPagePathName,
   handleNavigationClick,
 }) => {
   return (
     <footer className="footer">
       <div className="footer-container">
-        {pages.map((page, index) => (
-          <div key={page.label}>
+        {pages.map((page) => (
+          <div key={page.name}>
             <IconButton
               icon={<Icon name={page.icon} size={24} />}
-              className={selectedPage === index ? 'primary' : 'secondary'}
-              onClick={() => handleNavigationClick(index)}
+              className={
+                selectedPagePathName === page.path ? 'primary' : 'secondary'
+              }
+              onClick={() => handleNavigationClick(page.path)}
             />
           </div>
         ))}

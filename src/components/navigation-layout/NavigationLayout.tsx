@@ -1,4 +1,6 @@
 import React, { ReactNode, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { NavigationRoutes } from '../../constants/navigation';
 import Footer from './footer/Footer';
 import Header from './header/Header';
 
@@ -7,22 +9,40 @@ interface NavigationLayout {
   children: ReactNode;
 }
 
+/**
+ * Component used to wrap the page content to be displayed together with the Header and Footer components.
+ * @param isMobile Boolean attribute to know if the page is rendered in mobile view.
+ * @param children Page component to render together with the Header and Footer components.
+ * @returns A NavigationLayout with the Header, the Page component and (if mobile) the Footer.
+ */
 const NavigationLayout: React.FC<NavigationLayout> = ({
   isMobile,
   children,
 }) => {
-  const [selectedPage, setSelectedPage] = useState(0);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const handleNavigationClick = (index: number) => {
-    setSelectedPage(index);
+  const [selectedPagePathName, setSelectedPagePathName] = useState(
+    location.pathname,
+  );
+
+  const isValidNavigationPath = (path: string): boolean => {
+    return (
+      path === NavigationRoutes.home.path ||
+      path === NavigationRoutes.exam.path ||
+      path === NavigationRoutes.list.path ||
+      path === NavigationRoutes.categories.path
+    );
   };
 
-  const pages = [
-    { label: 'Home', path: '/', icon: 'PiHouse' },
-    { label: 'Exam', path: '/exam', icon: 'PiNote' },
-    { label: 'Dictionary', path: '/dictionary', icon: 'PiBookBookmark' },
-    { label: 'Categories', path: '/categories', icon: 'PiTag' },
-  ];
+  const pages = Object.values(NavigationRoutes).filter((route) =>
+    isValidNavigationPath(route.path),
+  );
+
+  const handleNavigationClick = (pathName: string) => {
+    setSelectedPagePathName(pathName);
+    navigate(pathName);
+  };
 
   return (
     <div className="layout-wrapper">
@@ -31,7 +51,7 @@ const NavigationLayout: React.FC<NavigationLayout> = ({
       ) : (
         <Header
           pages={pages}
-          selectedPage={selectedPage}
+          selectedPagePathName={selectedPagePathName}
           handleNavigationClick={handleNavigationClick}
         />
       )}
@@ -39,7 +59,7 @@ const NavigationLayout: React.FC<NavigationLayout> = ({
       {isMobile && (
         <Footer
           pages={pages}
-          selectedPage={selectedPage}
+          selectedPagePathName={selectedPagePathName}
           handleNavigationClick={handleNavigationClick}
         />
       )}

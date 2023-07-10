@@ -5,30 +5,32 @@ import Icon from '../../icon-button/icon/Icon';
 import './Header.scss';
 
 interface Header {
-  pages?: { label: string; path?: string; icon: string }[];
-  selectedPage?: number;
-  handleNavigationClick?: (index: number) => any;
+  pages?: { name: string; path: string; icon: string }[];
+  selectedPagePathName?: string;
+  handleNavigationClick?: (pathName: string) => any;
 }
 
 const Header: React.FC<Header> = ({
   pages = undefined,
-  selectedPage = undefined,
+  selectedPagePathName = undefined,
   handleNavigationClick = undefined,
 }) => {
   const loadNavigation = () => {
     const isHeaderNavigationDefined =
-      pages && selectedPage !== undefined && handleNavigationClick;
+      pages && selectedPagePathName && handleNavigationClick;
 
     if (!isHeaderNavigationDefined) {
       return null;
     }
 
-    return pages.map((page, index) => (
-      <div className="header-button-container" key={page.label}>
+    return pages.map((page) => (
+      <div className="header-button-container" key={page.name}>
         <IconButton
-          name={page.label}
-          className={selectedPage === index ? 'primary' : 'secondary'}
-          onClick={() => handleNavigationClick(index)}
+          name={page.name}
+          className={
+            selectedPagePathName === page.path ? 'primary' : 'secondary'
+          }
+          onClick={() => handleNavigationClick(page.path)}
         />
       </div>
     ));

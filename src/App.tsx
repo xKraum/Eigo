@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.scss';
-import Layout from './components/navigation-layout/NavigationLayout';
+import ProtectedRoute from './components/ProtectedRoute';
+import NavigationLayout from './components/navigation-layout/NavigationLayout';
+import { NavigationRoutes } from './constants/navigation';
 
 const App: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const isUserLoggedIn = true;
 
   useEffect(() => {
     const handleWindowSizeChange = () => setIsMobile(window.innerWidth <= 768);
@@ -13,15 +15,43 @@ const App: React.FC = () => {
     return () => window.removeEventListener('resize', handleWindowSizeChange);
   }, []);
 
+  const renderPage = (element: React.ReactNode) => {
+    return (
+      <ProtectedRoute>
+        <NavigationLayout isMobile={isMobile}>
+          <div className="content">{element}</div>
+        </NavigationLayout>
+      </ProtectedRoute>
+    );
+  };
+
   return (
     <div className="App">
-      {isUserLoggedIn ? (
-        <Layout isMobile={isMobile}>
-          <div className="content" />
-        </Layout>
-      ) : (
-        <div className="content" />
-      )}
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path={NavigationRoutes.home.path}
+            element={renderPage('Home Page')}
+          />
+          <Route
+            path={NavigationRoutes.exam.path}
+            element={renderPage('Exam Page')}
+          />
+          <Route
+            path={NavigationRoutes.list.path}
+            element={renderPage('List Page')}
+          />
+          <Route
+            path={NavigationRoutes.categories.path}
+            element={renderPage('Categories Page')}
+          />
+          <Route
+            path={NavigationRoutes.login.path}
+            element={renderPage('Login Page')}
+          />
+          <Route path="*" element={<ProtectedRoute />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 };
