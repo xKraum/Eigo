@@ -1,0 +1,30 @@
+@import './utils/styles/variables';
+
+.App {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .content {
+    margin: $content-margin-default;
+  }
+
+  .layout-wrapper .content {
+    margin: $content-margin-layout-mobile;
+  }
+
+  .primary {
+    color: $primary-color;
+  }
+
+  .secondary {
+    color: $secondary-color;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .layout-wrapper .content {
+      margin: $content-margin-layout-desktop;
+    }
+  }
+}

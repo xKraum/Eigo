@@ -48,5 +48,13 @@ module.exports = {
         unnamedComponents: 'arrow-function',
       },
     ],
+
+    // Enforce default arguments for optional props.
+    'react/require-default-props': ['error', { functions: 'defaultArguments' }],
+
+    // Changed ESLint 'no-shadow' to 'typescript-eslint/no-shadow' to avoid false positives with enums.
+    // https://github.com/typescript-eslint/typescript-eslint/issues/2483#issuecomment-687095358
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
   },
 };
