@@ -1,0 +1,38 @@
+@import './variables';
+
+.p-button {
+  &:focus {
+    box-shadow: 0 0px 5px 1px rgba(0, 0, 0, 0.2),
+      0 2px 5px 1px rgba(0, 0, 0, 0.14), 0 1px 5px 1px rgba(0, 0, 0, 0.12);
+  }
+
+  &.p-button-text {
+    color: $primary-color;
+
+    &:enabled:hover,
+    &:not(button):not(a):not(.p-disabled):hover {
+      color: $primary-color;
+    }
+
+    &:enabled:active,
+    &:not(button):not(a):not(.p-disabled):active {
+      color: $primary-color;
+    }
+  }
+}
+
+.p-dialog {
+  width: 75vw;
+}
+
+@media only screen and (min-width: 768px) {
+  .p-dialog {
+    width: 50vw;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .p-dialog {
+    width: 40vw;
+  }
+}
