@@ -1,6 +1,6 @@
 import React from 'react';
-import IconButton from '../../icon-button/IconButton';
-import Icon from '../../icon-button/icon/Icon';
+import Icon from '../../icon/Icon';
+import NavigationButton from '../../navigation-button/NavigationButton';
 import './Footer.scss';
 
 interface Footer {
@@ -18,15 +18,15 @@ const Footer: React.FC<Footer> = ({
     <footer className="footer">
       <div className="footer-container">
         {pages.map((page) => (
-          <div key={page.name}>
-            <IconButton
-              icon={<Icon name={page.icon} size={24} />}
-              className={
-                selectedPagePathName === page.path ? 'primary' : 'secondary'
-              }
-              onClick={() => handleNavigationClick(page.path)}
-            />
-          </div>
+          <NavigationButton
+            key={page.name}
+            icon={<Icon name={page.icon} size={24} />}
+            name={page.name}
+            className={
+              selectedPagePathName === page.path ? 'primary' : 'secondary'
+            }
+            onClick={() => handleNavigationClick(page.path)}
+          />
         ))}
       </div>
     </footer>

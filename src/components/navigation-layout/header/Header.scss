@@ -57,18 +57,6 @@
           display: flex;
           height: 100%;
           padding: 0 16px 0 0;
-
-          .icon-button.primary {
-            border-bottom: 3px solid $primary-color;
-          }
-
-          .icon-button.secondary {
-            border-bottom: 3px solid transparent;
-          }
-
-          .icon-button:hover {
-            color: $primary-color !important;
-          }
         }
       }
 

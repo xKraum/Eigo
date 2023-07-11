@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from '../../../assets/img/logo/react-logo.png';
-import IconButton from '../../icon-button/IconButton';
-import Icon from '../../icon-button/icon/Icon';
+import Icon from '../../icon/Icon';
+import NavigationButton from '../../navigation-button/NavigationButton';
 import './Header.scss';
 
 interface Header {
@@ -25,7 +25,7 @@ const Header: React.FC<Header> = ({
 
     return pages.map((page) => (
       <div className="header-button-container" key={page.name}>
-        <IconButton
+        <NavigationButton
           name={page.name}
           className={
             selectedPagePathName === page.path ? 'primary' : 'secondary'
@@ -45,7 +45,7 @@ const Header: React.FC<Header> = ({
         </div>
         <div className="header-content-right">
           <div className="header-button-container">
-            <IconButton
+            <NavigationButton
               icon={<Icon name="PiUser" size={24} />}
               className="secondary"
               onClick={() => undefined}
