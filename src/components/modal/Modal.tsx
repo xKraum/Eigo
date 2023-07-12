@@ -13,6 +13,7 @@ const Modal: React.FC<ModalProps> = ({
   onHideModal,
   closeOnMaskClick,
   children,
+  ...rest
 }) => {
   // NOTE: Close modal by clicking they grey background area (p-dialog-mask).
   useEffect(() => {
@@ -36,13 +37,7 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div>
-      {/* TODO: Implement rest props */}
-      <Dialog
-        header="Header"
-        visible={visible}
-        resizable={false}
-        onHide={() => onHideModal()}
-      >
+      <Dialog visible={visible} onHide={() => onHideModal()} {...rest}>
         {children}
       </Dialog>
     </div>

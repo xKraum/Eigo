@@ -14,6 +14,11 @@ const ModalAddWord: React.FC = () => {
     setDisabled(isModalVisible);
   };
 
+  const dialogSpecificProps = {
+    header: 'Add a word',
+    resizable: false,
+  };
+
   return (
     <>
       <Button
@@ -29,6 +34,7 @@ const ModalAddWord: React.FC = () => {
         visible={visible}
         onHideModal={() => setModalState(false)}
         closeOnMaskClick={false}
+        {...dialogSpecificProps}
       >
         <AddWord />
       </Modal>

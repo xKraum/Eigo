@@ -56,5 +56,8 @@ module.exports = {
     // https://github.com/typescript-eslint/typescript-eslint/issues/2483#issuecomment-687095358
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
+
+    // No spreading off so ...rest props can be passed through components
+    'react/jsx-props-no-spreading': 'off',
   },
 };
