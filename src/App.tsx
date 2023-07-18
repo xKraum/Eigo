@@ -21,7 +21,6 @@ const App: React.FC = () => {
       <ProtectedRoute>
         <NavigationLayout isMobile={isMobile}>
           <div className="content">{element}</div>
-          <ModalAddWord />
         </NavigationLayout>
       </ProtectedRoute>
     );
@@ -54,6 +53,7 @@ const App: React.FC = () => {
           <Route path="*" element={<ProtectedRoute />} />
         </Routes>
       </BrowserRouter>
+      <ModalAddWord />
     </div>
   );
 };

@@ -60,4 +60,13 @@ module.exports = {
     // No spreading off so ...rest props can be passed through components
     'react/jsx-props-no-spreading': 'off',
   },
+  // Avoid require checking in the server side.
+  overrides: [
+    {
+      files: ['server/**/*.js'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
+  ],
 };

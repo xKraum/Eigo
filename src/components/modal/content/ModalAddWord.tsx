@@ -1,5 +1,6 @@
 import { Button } from 'primereact/button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getDictionaryWordsCached } from '../../../cache/cache';
 import Icon from '../../icon/Icon';
 import Modal from '../Modal';
 import './ModalAddWord.scss';
@@ -8,6 +9,16 @@ import AddWord from './add-word/AddWord';
 const ModalAddWord: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [words, setWords] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchWords = async () => {
+      const dictionaryWords = await getDictionaryWordsCached();
+      setWords(dictionaryWords);
+    };
+
+    fetchWords();
+  }, []);
 
   const setModalState = (isModalVisible: boolean) => {
     setVisible(isModalVisible);
@@ -36,7 +47,7 @@ const ModalAddWord: React.FC = () => {
         closeOnMaskClick={false}
         {...dialogSpecificProps}
       >
-        <AddWord />
+        <AddWord words={words} />
       </Modal>
     </>
   );
