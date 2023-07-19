@@ -1,0 +1,26 @@
+@import './../../../../../utils/styles/variables';
+
+.description-option-container {
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid $box-default-border;
+  color: $secondary-color;
+  padding: 8px;
+  margin-top: 0.25rem;
+  font-size: 12px;
+
+  &.selected,
+  &:hover {
+    background-color: $primary-color;
+    color: white;
+  }
+
+  .description-container {
+    font-weight: bold;
+  }
+
+  .translations-container {
+    margin-top: 1rem;
+    font-size: 10px;
+  }
+}

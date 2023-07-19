@@ -1,0 +1,14 @@
+@import './../../../utils/styles/variables';
+
+.add-button {
+  position: fixed;
+  bottom: calc(#{$footer-height-mobile} + 20px);
+  right: 20px;
+  z-index: 1000;
+}
+
+@media only screen and (min-width: 768px) {
+  .add-button {
+    bottom: 20px;
+  }
+}

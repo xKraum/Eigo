@@ -10,6 +10,8 @@
     "@types/node": "16.18.37",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
+    "axios": "1.4.0",
+    "md5": "2.3.0",
     "node-sass": "7.0.3",
     "primereact": "9.6.0",
     "react": "18.2.0",
@@ -26,7 +28,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
-    "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx src --fix"
+    "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx src --fix",
+    "server": "node server/index.js"
   },
   "eslintConfig": {
     "extends": [
@@ -47,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@types/md5": "2.3.2",
     "@typescript-eslint/eslint-plugin": "5.60.1",
     "@typescript-eslint/parser": "5.60.1",
     "eslint": "8.44.0",

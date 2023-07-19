@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.scss';
 import ProtectedRoute from './components/ProtectedRoute';
+import ModalAddWord from './components/modal/content/ModalAddWord';
 import NavigationLayout from './components/navigation-layout/NavigationLayout';
 import { NavigationRoutes } from './constants/navigation';
 
@@ -52,6 +53,7 @@ const App: React.FC = () => {
           <Route path="*" element={<ProtectedRoute />} />
         </Routes>
       </BrowserRouter>
+      <ModalAddWord />
     </div>
   );
 };
