@@ -1,7 +1,7 @@
 const { getMongoClient } = require('../dbConnection.js');
 
 const WORDS_COLLECTION_NAME = 'words';
-const DICTIONARY_COLLECTION_NAME = 'dictionaryTest';
+const DICTIONARY_COLLECTION_NAME = 'dictionary';
 
 async function getAllWords() {
   const client = await getMongoClient();
