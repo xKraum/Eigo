@@ -1,6 +1,15 @@
 @import './variables';
 
 .p-button {
+  background: $primary-color;
+  border: 1px solid $primary-color;
+
+  &:enabled:hover,
+  &:not(button):not(a):not(.p-disabled):hover {
+    background: $primary-color-hover;
+    border-color: $primary-color-hover;
+  }
+
   &:focus {
     box-shadow: 0 0px 5px 1px rgba(0, 0, 0, 0.2),
       0 2px 5px 1px rgba(0, 0, 0, 0.14), 0 1px 5px 1px rgba(0, 0, 0, 0.12);
@@ -18,6 +27,35 @@
     &:not(button):not(a):not(.p-disabled):active {
       color: $primary-color;
     }
+  }
+
+  &.p-button-outlined {
+    color: $primary-color;
+
+    &:enabled:hover,
+    &:not(button):not(a):not(.p-disabled):hover {
+      color: $primary-color;
+    }
+  }
+}
+
+.p-inputtext {
+  &:enabled:hover {
+    border-color: $primary-color;
+  }
+
+  &:enabled:focus {
+    box-shadow: 0 0 0 0.1rem $primary-color-focus;
+    border-color: $primary-color;
+  }
+}
+
+.p-autocomplete {
+  width: 100%;
+
+  .p-inputtext,
+  .p-autocomplete-input {
+    width: 100%;
   }
 }
 
