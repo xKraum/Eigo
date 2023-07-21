@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ModalAddWord from './components/modal/content/ModalAddWord';
 import NavigationLayout from './components/navigation-layout/NavigationLayout';
 import { NavigationRoutes } from './constants/navigation';
+import LoginPage from './pages/LoginPage';
 
 const App: React.FC = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -16,12 +17,19 @@ const App: React.FC = () => {
     return () => window.removeEventListener('resize', handleWindowSizeChange);
   }, []);
 
-  const renderPage = (element: React.ReactNode) => {
+  const renderPage = (
+    element: React.ReactNode,
+    isLoginElement?: boolean,
+  ): JSX.Element => {
     return (
       <ProtectedRoute>
-        <NavigationLayout isMobile={isMobile}>
-          <div className="content">{element}</div>
-        </NavigationLayout>
+        {isLoginElement ? (
+          element
+        ) : (
+          <NavigationLayout isMobile={isMobile}>
+            <div className="content">{element}</div>
+          </NavigationLayout>
+        )}
       </ProtectedRoute>
     );
   };
@@ -48,7 +56,7 @@ const App: React.FC = () => {
           />
           <Route
             path={NavigationRoutes.login.path}
-            element={renderPage('Login Page')}
+            element={renderPage(<LoginPage />, true)}
           />
           <Route path="*" element={<ProtectedRoute />} />
         </Routes>
