@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { IFormattedWordEntry } from '../interfaces/formattedDictionary/IFormattedDictionary';
 
 // FIXME: To change, temporary private IP.
@@ -37,4 +37,28 @@ export const fetchDictionaryWordsData = async (
   }
 
   return null;
+};
+
+export const createUser = async (
+  username: string,
+  email: string,
+  password: string,
+): Promise<AxiosResponse | AxiosError> => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const response = await axios.post(
+      `${BASE_URL}/users/register`,
+      { username, email, password },
+      config,
+    );
+
+    return response;
+  } catch (error) {
+    return error as AxiosError;
+  }
 };

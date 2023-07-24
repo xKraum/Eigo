@@ -69,6 +69,11 @@
   width: 75vw;
 }
 
+.p-progress-spinner {
+  position: absolute;
+  z-index: 9999;
+}
+
 @media only screen and (min-width: 768px) {
   .p-dialog {
     width: 50vw;

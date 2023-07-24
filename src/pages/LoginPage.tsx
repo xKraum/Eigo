@@ -1,11 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import axios, { AxiosError } from 'axios';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import React, { useState } from 'react';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Toast, ToastMessage } from 'primereact/toast';
+import React, { useRef, useState } from 'react';
+import { createUser } from '../services/api';
 import './LoginPage.scss';
 
 const LoginPage: React.FC = () => {
+  const toastRef = useRef<Toast>(null);
+
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
 
@@ -28,6 +34,12 @@ const LoginPage: React.FC = () => {
     : 'Already have an account? ';
   const changeFormAnchorMessage = isLoginForm ? 'Sign up' : 'Log in';
 
+  const showToast = (toast: ToastMessage) => {
+    if (toastRef?.current) {
+      toastRef.current.show(toast);
+    }
+  };
+
   const clearFields = () => {
     setUsername('');
     setEmail('');
@@ -45,8 +57,10 @@ const LoginPage: React.FC = () => {
     return regex.test(value);
   };
 
-  const changeForm = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
+  const changeForm = (event?: React.MouseEvent<HTMLAnchorElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
     if (username || email || password) {
       clearFields();
     }
@@ -75,7 +89,39 @@ const LoginPage: React.FC = () => {
     return true;
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitRegister = async (): Promise<boolean> => {
+    const response = await createUser(username, email, password);
+
+    if (axios.isAxiosError(response)) {
+      const axiosError = response as AxiosError<any>;
+      showToast({
+        severity: 'error',
+        summary: 'User registration error',
+        detail: axiosError?.response?.data?.error,
+        life: 5000,
+      });
+    } else if (response?.status === 201) {
+      showToast({
+        severity: 'success',
+        summary: 'User registration successful',
+        detail: 'You have successfully registered!',
+      });
+
+      setTimeout(() => {
+        showToast({
+          severity: 'info',
+          summary: 'Login access',
+          detail: 'To access the website, please log in with your credentials.',
+        });
+      }, 3500);
+
+      return true;
+    }
+
+    return false;
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // TODO: Implement debounce + useCallback
     event.preventDefault();
     setIsFormSubmitting(true);
@@ -86,19 +132,20 @@ const LoginPage: React.FC = () => {
       if (isLoginForm) {
         console.log(`Login --- User: ${username} Password: ${password}`);
       } else {
-        console.log(
-          `Register --- User: ${username} Email: ${email} Password: ${password}`,
-        );
+        const success = await submitRegister();
+        if (success) {
+          changeForm();
+        }
       }
     }
 
-    setTimeout(() => {
-      setIsFormSubmitting(false);
-    }, 1000);
+    setIsFormSubmitting(false);
   };
 
   return (
     <div className="authentication-page">
+      <Toast ref={toastRef} />
+      {isFormSubmitting && <ProgressSpinner />}
       <div className="authentication-container">
         <div className="form-title">{formTitle}</div>
 
