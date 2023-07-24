@@ -2,33 +2,43 @@ const bcrypt = require('bcrypt');
 const { getMongoClient } = require('../dbConnection.js');
 
 const USERS_COLLECTION_NAME = 'users';
-const MONGO_DB_DATABASE_NAME = 'EigoAuth';
+const MONGO_DB_DATABASE_NAME = 'EigoUsers';
 
 async function doesUserExistByUsernameOrEmail(username, email) {
   const client = await getMongoClient(MONGO_DB_DATABASE_NAME);
   let userExist = true;
 
-  try {
-    const collection = client.db().collection(USERS_COLLECTION_NAME);
+  const query = {
+    $or: [],
+  };
 
-    const userExists = await collection.findOne({
-      $or: [
-        { username: { $regex: new RegExp(`^${username}$`, 'i') } },
-        { email: { $regex: new RegExp(`^${email}$`, 'i') } },
-      ],
-    });
-
-    if (userExists) {
-      console.log(
-        `User already exists: ${userExists.username} ${userExists.email}`,
-      );
-    } else {
-      userExist = false;
-    }
-  } catch (error) {
-    throw new Error('Error while registering the user.');
+  if (username) {
+    query.$or.push({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
   }
 
+  if (email) {
+    query.$or.push({ email: { $regex: new RegExp(`^${email}$`, 'i') } });
+  }
+
+  if (query.$or.length) {
+    try {
+      const collection = client.db().collection(USERS_COLLECTION_NAME);
+      const userExists = await collection.findOne(query);
+
+      if (userExists) {
+        console.log(
+          `User already exists: ${userExists.username} ${userExists.email}`,
+        );
+      } else {
+        userExist = false;
+      }
+    } catch (error) {
+      client.close();
+      throw new Error('Error while checking if the user exists.');
+    }
+  }
+
+  client.close();
   return userExist;
 }
 
@@ -41,7 +51,14 @@ async function userRegister(username, email, password) {
 
     const hashedPassword = await bcrypt.hash(password, 10); // 10 rounds of hashing
 
-    const user = { username, email, password: hashedPassword };
+    const user = {
+      username,
+      email,
+      password: hashedPassword,
+      preferences: {},
+      categories: [],
+      words: [],
+    };
     await collection.insertOne(user);
 
     createdUser = user;
@@ -49,9 +66,11 @@ async function userRegister(username, email, password) {
       console.log('User created successfully: ', createdUser);
     }
   } catch (error) {
+    client.close();
     throw new Error('Error while registering the user.');
   }
 
+  client.close();
   return createdUser;
 }
 
