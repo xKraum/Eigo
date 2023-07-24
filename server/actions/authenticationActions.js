@@ -74,4 +74,35 @@ async function userRegister(username, email, password) {
   return createdUser;
 }
 
-module.exports = { doesUserExistByUsernameOrEmail, userRegister };
+async function getUserByUsername(username) {
+  if (username) {
+    const client = await getMongoClient(MONGO_DB_DATABASE_NAME);
+
+    const query = {
+      $or: [{ username: { $regex: new RegExp(`^${username}$`, 'i') } }],
+    };
+
+    try {
+      const collection = client.db().collection(USERS_COLLECTION_NAME);
+      const user = await collection.findOne(query);
+      return user;
+    } catch (error) {
+      console.log('[getUserByUsername] username: ', username, error);
+      client.close();
+    }
+  }
+
+  return null;
+}
+
+async function doesPasswordMatch(password, hashedPassword) {
+  const isMatch = await bcrypt.compare(password, hashedPassword);
+  return isMatch;
+}
+
+module.exports = {
+  doesUserExistByUsernameOrEmail,
+  getUserByUsername,
+  doesPasswordMatch,
+  userRegister,
+};

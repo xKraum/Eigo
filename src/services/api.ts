@@ -39,6 +39,15 @@ export const fetchDictionaryWordsData = async (
   return null;
 };
 
+/**
+ * Creates a new user by sending a POST request to the server with the provided user information.
+ *
+ * @param {string} username - The username of the user.
+ * @param {string} email - The email of the user.
+ * @param {string} password - The password of the user.
+ * @returns - A Promise that resolves with an AxiosResponse if successful,
+ * or an AxiosError if the request encounters an error.
+ */
 export const createUser = async (
   username: string,
   email: string,
@@ -57,6 +66,26 @@ export const createUser = async (
       config,
     );
 
+    return response;
+  } catch (error) {
+    return error as AxiosError;
+  }
+};
+
+/**
+ * Logs in a user by sending a GET request to the server with the provided login credentials.
+ * @param {string} username - The username of the user.
+ * @param {string} password - The password of the user.
+ * @returns - A Promise that resolves with the AxiosResponse (containing user related data) if successful,
+ * or an AxiosError if the login request encounters an error.
+ */
+export const loginUser = async (
+  username: string,
+  password: string,
+): Promise<AxiosResponse | AxiosError> => {
+  try {
+    const url = `${BASE_URL}/users/login?reqUsername=${username}&reqPassword=${password}`;
+    const response = await axios.get(url);
     return response;
   } catch (error) {
     return error as AxiosError;

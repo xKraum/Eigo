@@ -6,7 +6,8 @@ import { Password } from 'primereact/password';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast, ToastMessage } from 'primereact/toast';
 import React, { useRef, useState } from 'react';
-import { createUser } from '../services/api';
+import { IUser } from '../interfaces/user/IUser';
+import { createUser, loginUser } from '../services/api';
 import './LoginPage.scss';
 
 const LoginPage: React.FC = () => {
@@ -89,7 +90,31 @@ const LoginPage: React.FC = () => {
     return true;
   };
 
-  const submitRegister = async (): Promise<boolean> => {
+  const handleLogin = async (): Promise<IUser | null> => {
+    const response = await loginUser(username, password);
+
+    if (axios.isAxiosError(response)) {
+      const axiosError = response as AxiosError<any>;
+      showToast({
+        severity: 'error',
+        summary: 'Invalid credentials.',
+        detail: axiosError?.response?.data?.error,
+        life: 5000,
+      });
+    } else if (response?.status === 200) {
+      showToast({
+        severity: 'success',
+        summary: 'Login successful.',
+        detail: 'You have successfully logged in.',
+      });
+
+      return response?.data?.user as IUser;
+    }
+
+    return null;
+  };
+
+  const handleRegister = async (): Promise<boolean> => {
     const response = await createUser(username, email, password);
 
     if (axios.isAxiosError(response)) {
@@ -104,7 +129,7 @@ const LoginPage: React.FC = () => {
       showToast({
         severity: 'success',
         summary: 'User registration successful',
-        detail: 'You have successfully registered!',
+        detail: 'You have successfully registered.',
       });
 
       setTimeout(() => {
@@ -130,9 +155,9 @@ const LoginPage: React.FC = () => {
       clearErrors();
 
       if (isLoginForm) {
-        console.log(`Login --- User: ${username} Password: ${password}`);
+        await handleLogin();
       } else {
-        const success = await submitRegister();
+        const success = await handleRegister();
         if (success) {
           changeForm();
         }
