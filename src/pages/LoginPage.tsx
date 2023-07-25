@@ -6,11 +6,14 @@ import { Password } from 'primereact/password';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast, ToastMessage } from 'primereact/toast';
 import React, { useRef, useState } from 'react';
+import { useUserDispatch } from '../hooks/useUserDispatch';
 import { IUser } from '../interfaces/user/IUser';
 import { createUser, loginUser } from '../services/api';
 import './LoginPage.scss';
 
 const LoginPage: React.FC = () => {
+  const { dispatchLoginUser } = useUserDispatch();
+
   const toastRef = useRef<Toast>(null);
 
   const [isLoginForm, setIsLoginForm] = useState(true);
@@ -155,7 +158,10 @@ const LoginPage: React.FC = () => {
       clearErrors();
 
       if (isLoginForm) {
-        await handleLogin();
+        const user = await handleLogin();
+        if (user) {
+          dispatchLoginUser(user);
+        }
       } else {
         const success = await handleRegister();
         if (success) {

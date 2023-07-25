@@ -64,13 +64,18 @@ module.exports = {
     'jsx-a11y/click-events-have-key-events': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
   },
-  // Avoid require checking in the server side.
   overrides: [
+    // Avoid require checking in the server side.
     {
       files: ['server/**/*.js'],
       rules: {
         '@typescript-eslint/no-var-requires': 'off',
       },
+    },
+    // Allow param-reassign for Redux state
+    {
+      files: ['src/redux/**/*Slice.ts'],
+      rules: { 'no-param-reassign': ['error', { props: false }] },
     },
   ],
 };

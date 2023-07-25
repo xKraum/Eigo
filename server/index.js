@@ -130,7 +130,7 @@ app.get('/users/login', async (req, res) => {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _id, password, ...userData } = user;
+    const { password, ...userData } = user;
     res
       .status(200)
       .json({ message: 'Login successful.', user: { ...userData } });

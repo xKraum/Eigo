@@ -1,6 +1,8 @@
 import React, { ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
 import { NavigationRoutes } from '../constants/navigation';
+import { RootState } from '../redux/store';
 
 interface ProtectedRouteProps {
   children?: ReactNode;
@@ -11,10 +13,10 @@ interface ProtectedRouteProps {
  * @returns The content passed by props.
  */
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children = null }) => {
-  // TODO: Implement authentication logic
-  // const { user } = useAuth();
+  const { user } = useSelector((state: RootState) => state.user);
+  const isUserLoggedIn = !!user;
+
   const location = useLocation();
-  const isUserLoggedIn = true;
 
   const validPaths = Object.values(NavigationRoutes).map((route) => route.path);
   const isPathValid = validPaths.includes(location.pathname);
