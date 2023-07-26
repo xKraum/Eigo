@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDictionaryWordsDataCached } from '../../../../cache/cache';
 import { IFormattedWordEntry } from '../../../../interfaces/formattedDictionary/IFormattedDictionary';
+import { IWord } from '../../../../interfaces/user/IUser';
 import { addWord } from '../../../../redux/features/user/wordsSlice';
 import { RootState } from '../../../../redux/store';
 import { addWordToUserList } from '../../../../services/api';
@@ -106,7 +107,7 @@ const AddWord: React.FC<AddWordProps> = ({ words }) => {
           detail: `You have already added that entry for the word '${wordEntry.word}' to your list.`,
         });
       } else {
-        const wordObject = {
+        const wordObject: IWord = {
           word: wordEntry.word,
           descriptionIndex: selectedIndex,
           categoryId: null,
