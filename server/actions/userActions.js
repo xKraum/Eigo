@@ -4,7 +4,34 @@ const { getMongoClient } = require('../dbConnection.js');
 const USERS_COLLECTION_NAME = 'users';
 const MONGO_DB_DATABASE_NAME = 'EigoUsers';
 
-async function addWordToUserList(req, res) {
+async function isWordAlreadyAdded(userWords, word, index) {
+  return userWords.some((userWordObject) => {
+    const { word: userWord, descriptionIndex } = userWordObject;
+    return userWord === word && descriptionIndex === index;
+  });
+}
+
+async function getUserWords(_id) {
+  try {
+    const client = await getMongoClient(MONGO_DB_DATABASE_NAME);
+    const collection = client.db().collection(USERS_COLLECTION_NAME);
+
+    const filter = { _id: new ObjectId(_id) };
+    const projection = { _id: 0, words: 1 };
+
+    const response = await collection.findOne(filter, { projection });
+
+    if (response?.words?.length) {
+      return response?.words;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  return [];
+}
+
+async function addWordToUserList(req, res, doServerCheck = true) {
   const { userId: _id } = req.query;
   const { word } = req.body;
 
@@ -13,6 +40,23 @@ async function addWordToUserList(req, res) {
       error: 'One or more required attributes are missing or empty.',
     });
     return;
+  }
+
+  if (doServerCheck) {
+    const userWords = await getUserWords(_id);
+    if (userWords?.length) {
+      const isWordAdded = await isWordAlreadyAdded(
+        userWords,
+        word.word,
+        word.descriptionIndex,
+      );
+      if (userWords?.length && isWordAdded) {
+        res.status(409).json({
+          error: 'The word is already in the user list.',
+        });
+        return;
+      }
+    }
   }
 
   try {

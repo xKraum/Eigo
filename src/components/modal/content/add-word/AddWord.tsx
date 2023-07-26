@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import {
   AutoComplete,
   AutoCompleteCompleteEvent,
@@ -127,10 +128,14 @@ const AddWord: React.FC<AddWordProps> = ({ words }) => {
               detail: `You have successfully added the word '${wordEntry.word}' to your list.`,
             });
           } else {
+            const axiosError = response as AxiosError<any>;
+            const errorMessage =
+              axiosError?.response?.data?.error ||
+              'Something went wrong. Please, try again later.';
             showToast({
               severity: 'error',
               summary: 'Error adding the word',
-              detail: 'Something went wrong. Please, try again later.',
+              detail: errorMessage,
             });
           }
         }

@@ -108,7 +108,8 @@ app.get('/users/reloadSession', async (req, res) => {
 });
 
 app.post('/users/addWord', async (req, res) => {
-  await addWordToUserList(req, res);
+  const doServerCheck = true;
+  await addWordToUserList(req, res, doServerCheck);
 });
 
 app.use((req, res) => {
