@@ -2,9 +2,10 @@ const { getMongoClient } = require('../dbConnection.js');
 
 const WORDS_COLLECTION_NAME = 'words';
 const DICTIONARY_COLLECTION_NAME = 'dictionary';
+const MONGO_DB_DATABASE_NAME = 'EigoSRS';
 
 async function getAllWords() {
-  const client = await getMongoClient();
+  const client = await getMongoClient(MONGO_DB_DATABASE_NAME);
   const collection = client.db().collection(WORDS_COLLECTION_NAME);
 
   const result = await collection
@@ -24,7 +25,7 @@ async function getAllWords() {
 }
 
 async function getWordsDataByNames(wordArray) {
-  const client = await getMongoClient();
+  const client = await getMongoClient(MONGO_DB_DATABASE_NAME);
   const collection = client.db().collection(DICTIONARY_COLLECTION_NAME);
 
   const result = await collection

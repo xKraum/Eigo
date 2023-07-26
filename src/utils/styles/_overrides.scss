@@ -59,8 +59,27 @@
   }
 }
 
+.p-password {
+  .p-password-input {
+    width: 100%;
+  }
+}
+
 .p-dialog {
   width: 75vw;
+}
+
+.p-progress-spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+
+  .p-progress-spinner-circle {
+    animation: p-progress-spinner-dash 1.5s ease-in-out infinite;
+    stroke: $primary-color;
+  }
 }
 
 @media only screen and (min-width: 768px) {

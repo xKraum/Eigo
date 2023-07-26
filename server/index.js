@@ -1,5 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const {
+  doesUserExistByUsernameOrEmail,
+  userRegister,
+  handleUserLoginOrSessionReload,
+} = require('./actions/authenticationActions.js');
 const {
   getAllWords,
   getWordsDataByNames,
@@ -28,6 +34,9 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+// Parse incoming requests with JSON payloads
+app.use(bodyParser.json());
 
 app.get('/dictionary/words', async (req, res) => {
   try {
@@ -58,6 +67,43 @@ app.get('/dictionary', async (req, res) => {
       .status(500)
       .json({ error: 'Something went wrong while fetching words data.' });
   }
+});
+
+app.post('/users/register', async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    // Existing values check.
+    if (!username || !email || !password) {
+      res.status(400).json({
+        error: 'One or more required attributes are missing or empty.',
+      });
+      return;
+    }
+
+    // User exists check.
+    const userExists = await doesUserExistByUsernameOrEmail(username, email);
+    if (userExists) {
+      res.status(403).json({
+        error: 'User with the provided username or email already exists.',
+      });
+      return;
+    }
+
+    // Register the user.
+    await userRegister(username, email, password);
+    res.status(201).json({ message: 'User registered successfully.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error while registering the user.' });
+  }
+});
+
+app.get('/users/login', async (req, res) => {
+  await handleUserLoginOrSessionReload(req, res, false);
+});
+
+app.get('/users/reloadSession', async (req, res) => {
+  await handleUserLoginOrSessionReload(req, res, true);
 });
 
 app.use((req, res) => {

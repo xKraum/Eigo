@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from '../../../assets/img/logo/react-logo.png';
+import { useUserDispatch } from '../../../hooks/useUserDispatch';
 import Icon from '../../icon/Icon';
 import NavigationButton from '../../navigation-button/NavigationButton';
 import './Header.scss';
@@ -15,6 +16,8 @@ const Header: React.FC<Header> = ({
   selectedPagePathName = undefined,
   handleNavigationClick = undefined,
 }) => {
+  const { dispatchLogoutUser } = useUserDispatch();
+
   const loadNavigation = () => {
     const isHeaderNavigationDefined =
       pages && selectedPagePathName && handleNavigationClick;
@@ -48,7 +51,8 @@ const Header: React.FC<Header> = ({
             <NavigationButton
               icon={<Icon name="PiUser" size={24} />}
               className="secondary"
-              onClick={() => undefined}
+              // FIXME: Move the dispatchLogoutUser to another button.
+              onClick={dispatchLogoutUser}
             />
           </div>
         </div>
