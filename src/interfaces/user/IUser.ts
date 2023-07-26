@@ -7,9 +7,9 @@ export interface ICategory {
 export interface IWord {
   word: string;
   descriptionIndex: number;
-  categoryId: number;
+  categoryId: number | null;
   level: number;
-  lastCheckDate: number;
+  lastCheckDate: number | null;
   totalAttempts: number | null;
   correctAnswersStreak: number | null;
   averageResponseTime: number | null;

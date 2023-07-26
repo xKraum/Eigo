@@ -10,6 +10,7 @@ const {
   getAllWords,
   getWordsDataByNames,
 } = require('./actions/dictionaryActions.js');
+const { addWordToUserList } = require('./actions/userActions.js');
 
 const app = express();
 const port = 5000;
@@ -104,6 +105,10 @@ app.get('/users/login', async (req, res) => {
 
 app.get('/users/reloadSession', async (req, res) => {
   await handleUserLoginOrSessionReload(req, res, true);
+});
+
+app.post('/users/addWord', async (req, res) => {
+  await addWordToUserList(req, res);
 });
 
 app.use((req, res) => {
