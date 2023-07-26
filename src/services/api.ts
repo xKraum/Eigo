@@ -1,8 +1,15 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { IFormattedWordEntry } from '../interfaces/formattedDictionary/IFormattedDictionary';
+import { IWord } from '../interfaces/user/IUser';
 
 // FIXME: To change, temporary private IP.
 const BASE_URL = 'http://192.168.1.40:5000';
+
+const config = {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 
 /**
  * Fetches dictionary words from the server.
@@ -54,12 +61,6 @@ export const createUser = async (
   password: string,
 ): Promise<AxiosResponse | AxiosError> => {
   try {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
     const response = await axios.post(
       `${BASE_URL}/users/register`,
       { username, email, password },
@@ -101,6 +102,23 @@ export const reloadUserSession = async (
   try {
     const url = `${BASE_URL}/users/reloadSession?reqId=${_id}&reqUsername=${username}&reqEmail=${email}`;
     const response = await axios.get(url);
+    return response;
+  } catch (error) {
+    return error as AxiosError;
+  }
+};
+
+export const addWordToUserList = async (
+  userId: string,
+  word: IWord,
+): Promise<AxiosResponse | AxiosError> => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/users/addWord?userId=${userId}`,
+      { word },
+      config,
+    );
+
     return response;
   } catch (error) {
     return error as AxiosError;
