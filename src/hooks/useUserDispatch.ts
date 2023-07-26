@@ -1,4 +1,8 @@
 import { useDispatch } from 'react-redux';
+import {
+  removeUserAuthInfoFromCache,
+  setUserAuthInfoToCache,
+} from '../cache/cache';
 import { IUser } from '../interfaces/user/IUser';
 import {
   clearCategories,
@@ -20,6 +24,8 @@ export function useUserDispatch() {
     dispatch(setPreferences(preferences));
     dispatch(setWords(words));
     dispatch(setCategories(categories));
+
+    setUserAuthInfoToCache(user);
   };
 
   const dispatchLogoutUser = () => {
@@ -27,6 +33,8 @@ export function useUserDispatch() {
     dispatch(clearPreferences());
     dispatch(clearWords());
     dispatch(clearCategories());
+
+    removeUserAuthInfoFromCache();
   };
 
   return { dispatchLoginUser, dispatchLogoutUser };

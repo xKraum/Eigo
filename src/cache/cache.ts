@@ -1,6 +1,13 @@
 import { IFormattedWordEntry } from '../interfaces/formattedDictionary/IFormattedDictionary';
+import { IUserAuthInfo } from '../interfaces/user/IUser';
 import { fetchDictionaryWordsData, getDictionaryWords } from '../services/api';
 import { getWordsFromWordEntries } from '../utils/objectUtil';
+
+enum CachedKey {
+  WordList = 'dictionaryWords',
+  WordDefinitionList = 'dictionary',
+  UserAuthentication = 'userAuthInfo',
+}
 
 const getCachedObject = (itemName: string): object | null => {
   const item = localStorage.getItem(itemName);
@@ -17,7 +24,7 @@ const getCachedObject = (itemName: string): object | null => {
  */
 export const getDictionaryWordsCached = async (): Promise<string[]> => {
   // Get words from localStorage
-  let dictionaryWords = getCachedObject('dictionaryWords') as string[];
+  let dictionaryWords = getCachedObject(CachedKey.WordList) as string[];
 
   if (!dictionaryWords) {
     // If there are no words cached, get them by calling the service.
@@ -25,7 +32,7 @@ export const getDictionaryWordsCached = async (): Promise<string[]> => {
 
     // If we got words from the service, add them to the localStorage
     if (dictionaryWords && dictionaryWords?.length) {
-      localStorage.setItem('dictionaryWords', JSON.stringify(dictionaryWords));
+      localStorage.setItem(CachedKey.WordList, JSON.stringify(dictionaryWords));
     }
   }
 
@@ -48,7 +55,10 @@ const setDictionaryWordsToCache = (
 
   // Save the cached dictionary words
   if (updatedEntries?.length) {
-    localStorage.setItem('dictionary', JSON.stringify(updatedEntries));
+    localStorage.setItem(
+      CachedKey.WordDefinitionList,
+      JSON.stringify(updatedEntries),
+    );
   }
 };
 
@@ -57,7 +67,7 @@ export const getDictionaryWordsDataCached = async (
 ): Promise<IFormattedWordEntry[]> => {
   const wordEntries: IFormattedWordEntry[] = [];
   const cachedWordEntries = getCachedObject(
-    'dictionary',
+    CachedKey.WordDefinitionList,
   ) as IFormattedWordEntry[];
   let fetchedWords;
 
@@ -95,4 +105,24 @@ export const getDictionaryWordsDataCached = async (
   setDictionaryWordsToCache(cachedWordEntries, fetchedWords);
 
   return wordEntries;
+};
+
+export const getUserAuthInfoCached = (): IUserAuthInfo => {
+  const userAuthInfo = getCachedObject(
+    CachedKey.UserAuthentication,
+  ) as IUserAuthInfo;
+  return userAuthInfo || null;
+};
+
+export const setUserAuthInfoToCache = (userAuthInfo: IUserAuthInfo): void => {
+  if (userAuthInfo) {
+    localStorage.setItem(
+      CachedKey.UserAuthentication,
+      JSON.stringify(userAuthInfo),
+    );
+  }
+};
+
+export const removeUserAuthInfoFromCache = () => {
+  localStorage.removeItem(CachedKey.UserAuthentication);
 };

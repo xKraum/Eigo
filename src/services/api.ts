@@ -91,3 +91,18 @@ export const loginUser = async (
     return error as AxiosError;
   }
 };
+
+// TODO: Temporary session restore function that has to be changed for token authentication.
+export const reloadUserSession = async (
+  _id: string,
+  username: string,
+  email: string,
+): Promise<AxiosResponse | AxiosError> => {
+  try {
+    const url = `${BASE_URL}/users/reloadSession?reqId=${_id}&reqUsername=${username}&reqEmail=${email}`;
+    const response = await axios.get(url);
+    return response;
+  } catch (error) {
+    return error as AxiosError;
+  }
+};

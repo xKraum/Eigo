@@ -4,8 +4,7 @@ const bodyParser = require('body-parser');
 const {
   doesUserExistByUsernameOrEmail,
   userRegister,
-  getUserByUsername,
-  doesPasswordMatch,
+  handleUserLoginOrSessionReload,
 } = require('./actions/authenticationActions.js');
 const {
   getAllWords,
@@ -99,44 +98,12 @@ app.post('/users/register', async (req, res) => {
   }
 });
 
-// TODO: Implement token authentication system
 app.get('/users/login', async (req, res) => {
-  try {
-    const { reqUsername, reqPassword } = req.query;
-    console.log(reqUsername, reqPassword);
-    // Existing values check.
-    if (!reqUsername || !reqPassword) {
-      res.status(400).json({
-        error: 'One or more required attributes are missing or empty.',
-      });
-      return;
-    }
+  await handleUserLoginOrSessionReload(req, res, false);
+});
 
-    const user = await getUserByUsername(reqUsername);
-    if (!user) {
-      res.status(401).json({
-        error:
-          'Invalid credentials. The provided username or password is incorrect.',
-      });
-      return;
-    }
-
-    const isMatch = await doesPasswordMatch(reqPassword, user.password);
-    if (!isMatch) {
-      res.status(401).json({
-        error: 'The provided username or password is incorrect.',
-      });
-      return;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...userData } = user;
-    res
-      .status(200)
-      .json({ message: 'Login successful.', user: { ...userData } });
-  } catch (error) {
-    res.status(500).json({ error: 'Error while login the user.' });
-  }
+app.get('/users/reloadSession', async (req, res) => {
+  await handleUserLoginOrSessionReload(req, res, true);
 });
 
 app.use((req, res) => {
