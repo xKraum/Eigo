@@ -4,6 +4,7 @@ import {
   AutoCompleteCompleteEvent,
 } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast, ToastMessage } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -148,6 +149,7 @@ const AddWord: React.FC<AddWordProps> = ({ words }) => {
   return (
     <div className="add-word-container">
       <Toast ref={toastRef} />
+      {isWordBeingAdded && <ProgressSpinner />}
       <AutoComplete
         ref={focusElementRef}
         value={inputValue}
