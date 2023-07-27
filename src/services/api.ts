@@ -110,12 +110,12 @@ export const reloadUserSession = async (
 
 export const addWordToUserList = async (
   userId: string,
-  word: IWord,
+  wordObject: IWord,
 ): Promise<AxiosResponse | AxiosError> => {
   try {
     const response = await axios.post(
       `${BASE_URL}/users/addWord?userId=${userId}`,
-      { word },
+      { wordObject },
       config,
     );
 
