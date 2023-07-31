@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { IFormattedWordEntry } from '../interfaces/formattedDictionary/IFormattedDictionary';
+import { IFormattedDictionaryWord } from '../interfaces/formattedDictionary/IFormattedDictionary';
 import { IWord } from '../interfaces/user/IUser';
 
 // FIXME: To change, temporary private IP.
@@ -30,11 +30,11 @@ export const getDictionaryWords = async (): Promise<string[]> => {
  * Fetches dictionary word objects (words, descriptions, translations) from the server.
  *
  * @param words - An array of words to fetch data for.
- * @returns A promise that resolves to an array of IFormattedWordEntry, or null if no words are provided.
+ * @returns A promise that resolves to an array of IFormattedDictionaryWord, or null if no words are provided.
  */
 export const fetchDictionaryWordsData = async (
   words: string[],
-): Promise<IFormattedWordEntry[] | null> => {
+): Promise<IFormattedDictionaryWord[] | null> => {
   // const parameters = ['banana', 'banality'];
   if (words) {
     const parameters = words.join(',');
@@ -108,14 +108,17 @@ export const reloadUserSession = async (
   }
 };
 
+/**
+ * Adds or updates a word from the list.
+ */
 export const addWordToUserList = async (
   userId: string,
-  word: IWord,
+  wordObject: IWord,
 ): Promise<AxiosResponse | AxiosError> => {
   try {
     const response = await axios.post(
       `${BASE_URL}/users/addWord?userId=${userId}`,
-      { word },
+      { wordObject },
       config,
     );
 

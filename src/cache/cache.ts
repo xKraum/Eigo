@@ -1,7 +1,6 @@
-import { IFormattedWordEntry } from '../interfaces/formattedDictionary/IFormattedDictionary';
+import { IFormattedDictionaryWord } from '../interfaces/formattedDictionary/IFormattedDictionary';
 import { IUserAuthInfo } from '../interfaces/user/IUser';
 import { fetchDictionaryWordsData, getDictionaryWords } from '../services/api';
-import { getWordsFromWordEntries } from '../utils/objectUtil';
 
 enum CachedKey {
   WordList = 'dictionaryWords',
@@ -40,10 +39,10 @@ export const getDictionaryWordsCached = async (): Promise<string[]> => {
 };
 
 const setDictionaryWordsToCache = (
-  cachedEntries: IFormattedWordEntry[] | null,
-  newEntries: IFormattedWordEntry[] | null | undefined,
+  cachedEntries: IFormattedDictionaryWord[] | null,
+  newEntries: IFormattedDictionaryWord[] | null | undefined,
 ) => {
-  const updatedEntries: IFormattedWordEntry[] = [];
+  const updatedEntries: IFormattedDictionaryWord[] = [];
 
   if (cachedEntries?.length) {
     updatedEntries.push(...cachedEntries);
@@ -64,16 +63,16 @@ const setDictionaryWordsToCache = (
 
 export const getDictionaryWordsDataCached = async (
   wordsToSearch: string[],
-): Promise<IFormattedWordEntry[]> => {
-  const wordEntries: IFormattedWordEntry[] = [];
+): Promise<IFormattedDictionaryWord[]> => {
+  const wordEntries: IFormattedDictionaryWord[] = [];
   const cachedWordEntries = getCachedObject(
     CachedKey.WordDefinitionList,
-  ) as IFormattedWordEntry[];
+  ) as IFormattedDictionaryWord[];
   let fetchedWords;
 
   // If the entries retrieved from localStorage are not null
   if (cachedWordEntries) {
-    const cachedWords: string[] = getWordsFromWordEntries(cachedWordEntries);
+    const cachedWords = cachedWordEntries.map(({ word }) => word);
     const nonCachedWords: string[] = [];
 
     // For each word, add the entry to wordEntries if it's already cached

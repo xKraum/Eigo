@@ -9,9 +9,12 @@ import { Toast, ToastMessage } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDictionaryWordsDataCached } from '../../../../cache/cache';
-import { IFormattedWordEntry } from '../../../../interfaces/formattedDictionary/IFormattedDictionary';
-import { IWord } from '../../../../interfaces/user/IUser';
-import { addWord } from '../../../../redux/features/user/wordsSlice';
+import { IFormattedDictionaryWord } from '../../../../interfaces/formattedDictionary/IFormattedDictionary';
+import { IWord, IWordData } from '../../../../interfaces/user/IUser';
+import {
+  addWord,
+  updateWord,
+} from '../../../../redux/features/user/wordsSlice';
 import { RootState } from '../../../../redux/store';
 import { addWordToUserList } from '../../../../services/api';
 import { getClosestWords } from '../../../../utils/levenshteinDistance';
@@ -31,7 +34,9 @@ const AddWord: React.FC<AddWordProps> = ({ words }) => {
   const [closestWords, setClosestWords] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const [wordEntry, setWordEntry] = useState<IFormattedWordEntry | null>(null);
+  const [wordEntry, setWordEntry] = useState<IFormattedDictionaryWord | null>(
+    null,
+  );
   const [isWordBeingAdded, setIsWordBeingAdded] = useState(false);
 
   const focusElementRef = useRef<AutoComplete>(null);
@@ -81,16 +86,27 @@ const AddWord: React.FC<AddWordProps> = ({ words }) => {
   };
 
   /**
-   * Checks if a word and its description entry is already added in the user's word list.
-   *
-   * @param word - The word to check if it is already added.
-   * @param index - The index of the description for the word.
-   * @returns True if the word is already added with the same description index; otherwise, false.
+   * Gets the first occurrence of a word in the userWords array.
+   * @param {string} word - The word to search for in the userWords array.
+   * @returns {IWord | undefined} The first occurrence of the word in the userWords array, or undefined if not found.
    */
-  const isWordAlreadyAdded = (word: string, index: number) => {
-    return userWords.some((userWordObject) => {
-      const { word: userWord, descriptionIndex } = userWordObject;
-      return userWord === word && descriptionIndex === index;
+  const getWordAlreadyAdded = (word: string): IWord | undefined => {
+    const filteredWords = [...userWords].filter(
+      (userWordObject) => userWordObject.word === word,
+    );
+
+    return filteredWords?.length ? filteredWords[0] : undefined;
+  };
+
+  /**
+   * Checks if a given index is already present in the descriptionIndexes of the IWord object entries.
+   * @param {IWord} wordObject - The word object to check for the descriptionIndex in its entries.
+   * @param {number} index - The index to check.
+   * @returns {boolean} True if the index is already present in the wordObject entries, otherwise false.
+   */
+  const isWordIndexAlreadyAdded = (wordObject: IWord, index: number) => {
+    return wordObject.entries.some((wordData) => {
+      return wordData.descriptionIndex === index;
     });
   };
 
@@ -101,15 +117,25 @@ const AddWord: React.FC<AddWordProps> = ({ words }) => {
     if (wordEntry && selectedIndex !== -1) {
       setIsWordBeingAdded(true);
 
-      if (isWordAlreadyAdded(wordEntry.word, selectedIndex)) {
+      let wordObject = getWordAlreadyAdded(wordEntry.word);
+      const isUpdate = !!wordObject;
+      if (!!wordObject && isWordIndexAlreadyAdded(wordObject, selectedIndex)) {
         showToast({
           severity: 'error',
           summary: 'Error adding the word',
           detail: `You have already added that entry for the word '${wordEntry.word}' to your list.`,
         });
       } else {
-        const wordObject: IWord = {
-          word: wordEntry.word,
+        // Create the wordObject if is a new word.
+        if (!wordObject) {
+          wordObject = {
+            word: wordEntry.word,
+            entries: [],
+          };
+        }
+
+        // Create the new entry.
+        const newEntry: IWordData = {
           descriptionIndex: selectedIndex,
           categoryId: null,
           level: 0,
@@ -119,11 +145,28 @@ const AddWord: React.FC<AddWordProps> = ({ words }) => {
           averageResponseTime: null,
         };
 
+        // Update the entries in a new object to upload the entire object.
+        const updatedWodObject: IWord = {
+          ...wordObject,
+          entries: [...wordObject.entries, newEntry],
+        };
+
+        // Sort the object's entries by index.
+        updatedWodObject.entries.sort(
+          (entryA, entryB) => entryA.descriptionIndex - entryB.descriptionIndex,
+        );
+
         if (user) {
+          // Add the object to the database.
           const { _id: userId } = user;
-          const response = await addWordToUserList(userId, wordObject);
+          const response = await addWordToUserList(userId, updatedWodObject);
           if (response?.status === 200) {
-            dispatch(addWord(wordObject));
+            // If the response is successful add/update the object in Redux.
+            if (isUpdate) {
+              dispatch(updateWord(updatedWodObject));
+            } else {
+              dispatch(addWord(updatedWodObject));
+            }
             showToast({
               severity: 'success',
               summary: 'Word added successfully',

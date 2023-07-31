@@ -1,0 +1,44 @@
+@import '../../utils/styles//variables.scss';
+
+.word-card {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  &__data {
+    font-size: 14px;
+    margin: 16px;
+
+    .word {
+      font-weight: bold;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .meaning {
+      margin: 8px 0 0 8px;
+
+      .translations {
+        font-size: 12px;
+        font-style: italic;
+
+        &.spaced {
+          margin-top: 12px;
+        }
+      }
+    }
+  }
+
+  &__level {
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 24px;
+    background-color: $primary-color;
+    border-radius: 0 8px 8px 0;
+  }
+}

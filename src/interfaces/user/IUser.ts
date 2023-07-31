@@ -4,15 +4,22 @@ export interface ICategory {
   icon: string;
 }
 
+export interface IWordData {
+  word?: string;
+  description?: string;
+  translations?: string[];
+  descriptionIndex: number;
+  categoryId: null;
+  level: 0;
+  lastCheckDate: null;
+  totalAttempts: null;
+  correctAnswersStreak: null;
+  averageResponseTime: null;
+}
+
 export interface IWord {
   word: string;
-  descriptionIndex: number;
-  categoryId: number | null;
-  level: number;
-  lastCheckDate: number | null;
-  totalAttempts: number | null;
-  correctAnswersStreak: number | null;
-  averageResponseTime: number | null;
+  entries: IWordData[];
 }
 
 export interface IUserAuthInfo {

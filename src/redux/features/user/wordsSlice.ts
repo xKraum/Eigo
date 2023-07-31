@@ -15,9 +15,22 @@ const wordsSlice = createSlice({
     setWords: (state, action: PayloadAction<IWord[]>) => {
       state.words = [...action.payload];
     },
+    updateWord: (state, action: PayloadAction<IWord>) => {
+      const { word, entries } = action.payload;
+      const wordIndex = state.words.findIndex((w) => w.word === word);
+
+      if (wordIndex !== -1) {
+        const updatedWord: IWord = {
+          ...state.words[wordIndex],
+          entries,
+        };
+
+        state.words[wordIndex] = updatedWord;
+      }
+    },
     clearWords: () => initialState,
   },
 });
 
-export const { addWord, setWords, clearWords } = wordsSlice.actions;
+export const { addWord, setWords, updateWord, clearWords } = wordsSlice.actions;
 export default wordsSlice.reducer;

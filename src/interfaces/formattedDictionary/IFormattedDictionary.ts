@@ -1,13 +1,13 @@
 export interface IFormattedDescriptionEntry {
-  description: string | null;
-  translations: string[] | null;
+  description: string | undefined;
+  translations: string[] | undefined;
 }
 
-export interface IFormattedWordEntry {
+export interface IFormattedDictionaryWord {
   word: string;
   entries: IFormattedDescriptionEntry[] | null;
 }
 
 export interface IFormattedDictionary {
-  words: IFormattedWordEntry[];
+  words: IFormattedDictionaryWord[];
 }
