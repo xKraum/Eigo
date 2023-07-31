@@ -9,7 +9,7 @@ import { Toast, ToastMessage } from 'primereact/toast';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDictionaryWordsDataCached } from '../../../../cache/cache';
-import { IFormattedWordEntry } from '../../../../interfaces/formattedDictionary/IFormattedDictionary';
+import { IFormattedDictionaryWord } from '../../../../interfaces/formattedDictionary/IFormattedDictionary';
 import { IWord, IWordData } from '../../../../interfaces/user/IUser';
 import {
   addWord,
@@ -34,7 +34,9 @@ const AddWord: React.FC<AddWordProps> = ({ words }) => {
   const [closestWords, setClosestWords] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const [wordEntry, setWordEntry] = useState<IFormattedWordEntry | null>(null);
+  const [wordEntry, setWordEntry] = useState<IFormattedDictionaryWord | null>(
+    null,
+  );
   const [isWordBeingAdded, setIsWordBeingAdded] = useState(false);
 
   const focusElementRef = useRef<AutoComplete>(null);

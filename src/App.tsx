@@ -11,6 +11,7 @@ import NavigationLayout from './components/navigation-layout/NavigationLayout';
 import { NavigationRoutes } from './constants/navigation';
 import { useUserDispatch } from './hooks/useUserDispatch';
 import { IUser } from './interfaces/user/IUser';
+import ListPage from './pages/ListPage';
 import LoginPage from './pages/LoginPage';
 import { RootState } from './redux/store';
 import { reloadUserSession } from './services/api';
@@ -91,7 +92,7 @@ const App: React.FC = () => {
             />
             <Route
               path={NavigationRoutes.list.path}
-              element={renderPage('List Page')}
+              element={renderPage(<ListPage />)}
             />
             <Route
               path={NavigationRoutes.categories.path}

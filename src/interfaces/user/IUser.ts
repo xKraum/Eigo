@@ -5,6 +5,7 @@ export interface ICategory {
 }
 
 export interface IWordData {
+  word?: string;
   description?: string;
   translations?: string[];
   descriptionIndex: number;
