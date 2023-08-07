@@ -6,33 +6,58 @@ import Icon from '../icon/Icon';
 import './FilterList.scss';
 
 interface FilterListProps {
+  isAlphabetical: boolean;
   isAscending: boolean;
-  onIsAscendingChange: (isAscending: boolean) => void;
+  setIsAlphabetical: (isAlphabeticalSorting: boolean) => void;
+  setIsAscending: (isAscending: boolean) => void;
 }
 const FilterList: React.FC<FilterListProps> = ({
+  isAlphabetical,
   isAscending,
-  onIsAscendingChange,
+  setIsAlphabetical,
+  setIsAscending,
 }) => {
   const menuElement = useRef<Menu>(null);
 
-  const alphabeticalSortingItems = [
+  const handleSortingChange = (alphabetical: boolean, ascending: boolean) => {
+    setIsAlphabetical(alphabetical);
+    setIsAscending(ascending);
+  };
+
+  const sortingOptions = [
     {
       template: (
         <div>
           <div className="radio-option">
-            <label htmlFor="alphabeticalAsc">Ascending</label>
+            <label htmlFor="alphabeticalAsc">{'Alphabetical (A > Z)'}</label>
             <RadioButton
               inputId="alphabeticalAsc"
-              onChange={() => onIsAscendingChange(true)}
-              checked={isAscending}
+              onChange={() => handleSortingChange(true, true)}
+              checked={isAlphabetical && isAscending}
             />
           </div>
           <div className="radio-option">
-            <label htmlFor="alphabeticalDesc">Descending</label>
+            <label htmlFor="alphabeticalDesc">{'Alphabetical (Z > A)'}</label>
             <RadioButton
               inputId="alphabeticalDesc"
-              onChange={() => onIsAscendingChange(false)}
-              checked={!isAscending}
+              onChange={() => handleSortingChange(true, false)}
+              checked={isAlphabetical && !isAscending}
+            />
+          </div>
+          <div className="radio-option">
+            <label htmlFor="levelAsc">Level (Higher first)</label>
+            <RadioButton
+              inputId="levelAsc"
+              onChange={() => handleSortingChange(false, true)}
+              checked={!isAlphabetical && isAscending}
+            />
+          </div>
+          <div className="radio-option">
+            <label htmlFor="levelDesc">Level (Lower first)</label>
+            <RadioButton
+              inputId="levelDesc"
+              onChange={() => handleSortingChange(false, false)}
+              checked={!isAlphabetical && !isAscending}
             />
           </div>
         </div>
@@ -45,7 +70,7 @@ const FilterList: React.FC<FilterListProps> = ({
     <div className="filter-list">
       <Menu
         ref={menuElement}
-        model={alphabeticalSortingItems}
+        model={sortingOptions}
         popup
         popupAlignment="right"
       />

@@ -3,51 +3,75 @@ import { useSelector } from 'react-redux';
 import { getDictionaryWordsDataCached } from '../cache/cache';
 import FilterList from '../components/filter-list/FilterList';
 import WordCard from '../components/word-card/WordCard';
-import { IWord, IWordData } from '../interfaces/user/IUser';
+import { IWordData } from '../interfaces/user/IUser';
 import { RootState } from '../redux/store';
-import { getUpdatedUserWords, sortByWordName } from '../utils/objectUtil';
+import {
+  getListSorted,
+  getUpdatedUserWords,
+  getWordDataEntries,
+} from '../utils/objectUtil';
 import './ListPage.scss';
 
 const ListPage: React.FC = () => {
   const { words } = useSelector((state: RootState) => state.words);
-  const [wordList, setWordList] = useState<IWord[]>([]);
+  const [wordDataList, setWordDataList] = useState<IWordData[]>([]);
+  const [isAlphabetical, setIsAlphabetical] = useState(true);
   const [isAscending, setIsAscending] = useState(true);
 
   useEffect(() => {
     const updateWords = async () => {
+      // Get a word name array from the user words.
       const wordNames = words.map(({ word }) => word);
+
+      // Get the dictionary words (with descriptions and translations) from the dictionary, based on the user words.
       const dictionaryUserWords = await getDictionaryWordsDataCached(wordNames);
+
+      // Get an updated user word list (adding the missing attributes with the dictionary ones).
       const updatedUserWords = await getUpdatedUserWords(
         words,
         dictionaryUserWords,
       );
 
-      setWordList(sortByWordName(updatedUserWords, isAscending));
+      // Get the entries (IWordData) from the IWord objects.
+      const wordDataEntries = getWordDataEntries(updatedUserWords);
+
+      // Set the word entries sorted.
+      setWordDataList(
+        getListSorted(wordDataEntries, isAlphabetical, isAscending),
+      );
     };
 
     updateWords();
   }, [words]);
 
   useEffect(() => {
-    const wordListCopy = [...wordList];
-    setWordList(sortByWordName(wordListCopy, isAscending));
-  }, [isAscending]);
+    const wordDataListCopy = [...wordDataList];
+    setWordDataList(
+      getListSorted(wordDataListCopy, isAlphabetical, isAscending),
+    );
+  }, [isAlphabetical, isAscending]);
 
   // NOTE: Speed Dial, Accordion?
   return (
     <div className="list-page">
       <div className="page-title">Word list</div>
-      <FilterList
-        isAscending={isAscending}
-        onIsAscendingChange={setIsAscending}
-      />
-      {wordList.map(({ word, entries }: IWord) => {
-        return entries.map((entry: IWordData) => {
-          return (
-            <WordCard key={word + entry.descriptionIndex} wordData={entry} />
-          );
-        });
-      })}
+      <div className="data-control-panel">
+        <FilterList
+          isAlphabetical={isAlphabetical}
+          isAscending={isAscending}
+          setIsAlphabetical={setIsAlphabetical}
+          setIsAscending={setIsAscending}
+        />
+      </div>
+      {wordDataList.map(
+        (entry: IWordData) =>
+          entry.word && (
+            <WordCard
+              key={entry.word + entry.descriptionIndex}
+              wordData={entry}
+            />
+          ),
+      )}
     </div>
   );
 };
