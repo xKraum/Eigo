@@ -8,6 +8,7 @@ interface Icon {
   color?: string;
   className?: string;
   title?: string;
+  rotate?: 90 | 180 | 270;
 }
 
 /**
@@ -21,10 +22,17 @@ const Icon: React.FC<Icon> = ({
   color = undefined,
   className = undefined,
   title = '',
+  rotate = 0,
 }) => {
   const PiIcon = PiIcons[name as keyof typeof PiIcons];
   return PiIcon ? (
-    <PiIcon size={size} color={color} title={title} className={className} />
+    <PiIcon
+      size={size}
+      color={color}
+      title={title}
+      className={className}
+      style={rotate ? { transform: `rotate(${rotate}deg)` } : undefined}
+    />
   ) : (
     <VscBlank size={size} title={title} className={className} />
   );

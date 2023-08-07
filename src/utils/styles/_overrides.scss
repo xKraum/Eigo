@@ -65,6 +65,32 @@
   }
 }
 
+.p-radiobutton {
+  .p-radiobutton-box {
+    &.p-highlight {
+      border-color: $primary-color;
+      background: $primary-color;
+
+      &:not(.p-disabled):hover {
+        border-color: $primary-color-hover;
+        background: $primary-color-hover;
+        color: #ffffff;
+      }
+    }
+
+    &:not(.p-disabled) {
+      &.p-focus {
+        box-shadow: 0 0 0 0.1rem $primary-color;
+        border-color: $primary-color;
+      }
+
+      &:not(.p-highlight):hover {
+        border-color: $primary-color;
+      }
+    }
+  }
+}
+
 .p-dialog {
   width: 75vw;
 }

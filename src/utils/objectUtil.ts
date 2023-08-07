@@ -61,21 +61,19 @@ export const getUpdatedUserWords = async (
 /**
  * Sort an array of IWord objects based on their word property (case-insensitive).
  * @param words - The array of IWord objects to be sorted.
- * @param reverse - If true, the sorting will be in descending order (default is false for ascending order).
+ * @param ascending - If true, the sorting will be in ascending order.
  * @returns A new array of IWord sorted by word name.
  */
-export const sortByWordName = (words: IWord[], reverse = false): IWord[] => {
+export const sortByWordName = (words: IWord[], ascending = true): IWord[] => {
   const compareWords = (a: IWord, b: IWord) => {
     const wordA = a.word ? a.word.toLowerCase() : '';
     const wordB = b.word ? b.word.toLowerCase() : '';
 
-    if (wordA < wordB) {
-      return reverse ? 1 : -1;
+    if (wordA === wordB) {
+      return 0;
     }
-    if (wordA > wordB) {
-      return reverse ? -1 : 1;
-    }
-    return 0;
+
+    return ascending ? wordA.localeCompare(wordB) : wordB.localeCompare(wordA);
   };
 
   const sortedWords = [...words].sort(compareWords);
