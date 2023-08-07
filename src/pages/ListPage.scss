@@ -11,7 +11,26 @@
 
   .data-control-panel {
     width: 100%;
+    margin: 1rem 0 0.5rem 0;
     display: flex;
     justify-content: flex-end;
+
+    .search-input {
+      width: 100%;
+    }
+
+    .filter-list {
+      margin-left: 0.75rem;
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .list-page {
+    .data-control-panel {
+      .search-input {
+        width: unset;
+      }
+    }
   }
 }

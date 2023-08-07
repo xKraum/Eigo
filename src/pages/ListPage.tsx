@@ -1,3 +1,4 @@
+import { InputText } from 'primereact/inputtext';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getDictionaryWordsDataCached } from '../cache/cache';
@@ -6,6 +7,7 @@ import WordCard from '../components/word-card/WordCard';
 import { IWordData } from '../interfaces/user/IUser';
 import { RootState } from '../redux/store';
 import {
+  filterWordDataByText,
   getListSorted,
   getUpdatedUserWords,
   getWordDataEntries,
@@ -15,9 +17,14 @@ import './ListPage.scss';
 const ListPage: React.FC = () => {
   const { words } = useSelector((state: RootState) => state.words);
   const [wordDataList, setWordDataList] = useState<IWordData[]>([]);
+  const [filteredWordDataList, setFilteredWordDataList] = useState<IWordData[]>(
+    [],
+  );
   const [isAlphabetical, setIsAlphabetical] = useState(true);
   const [isAscending, setIsAscending] = useState(true);
+  const [searchText, setSearchText] = useState('');
 
+  // Set all the user words in the wordDataList object.
   useEffect(() => {
     const updateWords = async () => {
       // Get a word name array from the user words.
@@ -35,15 +42,20 @@ const ListPage: React.FC = () => {
       // Get the entries (IWordData) from the IWord objects.
       const wordDataEntries = getWordDataEntries(updatedUserWords);
 
-      // Set the word entries sorted.
-      setWordDataList(
-        getListSorted(wordDataEntries, isAlphabetical, isAscending),
+      // Get the entries sorted.
+      const sortedWordDataEntries = getListSorted(
+        wordDataEntries,
+        isAlphabetical,
+        isAscending,
       );
+
+      setWordDataList(sortedWordDataEntries);
     };
 
     updateWords();
   }, [words]);
 
+  // Sort wordDataList based on the option selected.
   useEffect(() => {
     const wordDataListCopy = [...wordDataList];
     setWordDataList(
@@ -51,11 +63,32 @@ const ListPage: React.FC = () => {
     );
   }, [isAlphabetical, isAscending]);
 
+  // Update the filtered words based on the searchText whenever wordDataList changes.
+  useEffect(() => {
+    setFilteredWordDataList(
+      filterWordDataByText([...wordDataList], searchText),
+    );
+  }, [wordDataList]);
+
+  // Set filtered words based on the searchText attribute.
+  useEffect(() => {
+    setFilteredWordDataList(filterWordDataByText(wordDataList, searchText));
+  }, [searchText]);
+
   // NOTE: Speed Dial, Accordion?
   return (
     <div className="list-page">
       <div className="page-title">Word list</div>
       <div className="data-control-panel">
+        <InputText
+          className="search-input"
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+          placeholder="Search by word"
+          maxLength={20}
+        />
         <FilterList
           isAlphabetical={isAlphabetical}
           isAscending={isAscending}
@@ -63,7 +96,7 @@ const ListPage: React.FC = () => {
           setIsAscending={setIsAscending}
         />
       </div>
-      {wordDataList.map(
+      {filteredWordDataList.map(
         (entry: IWordData) =>
           entry.word && (
             <WordCard

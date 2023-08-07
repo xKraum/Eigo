@@ -145,3 +145,26 @@ export const getListSorted = (
     ? sortByWordName(wordDataListCopy, isAscending)
     : sortWordDataByWordLevel(wordDataListCopy, isAscending);
 };
+
+/**
+ * Filters an array of IWordData objects based on the provided search text (case-insensitive).
+ *
+ * @param wordDataList - The array of IWordData objects to be filtered.
+ * @param searchText - The text to be used for filtering.
+ * @returns A new array of IWordData objects that include the search text in their word name.
+ */
+export const filterWordDataByText = (
+  wordDataList: IWordData[],
+  searchText: string,
+): IWordData[] => {
+  const wordDataListCopy = [...wordDataList];
+
+  if (!searchText) {
+    return wordDataListCopy;
+  }
+
+  return wordDataListCopy.filter((wordData: IWordData) => {
+    const word = wordData?.word ? wordData.word.toLocaleLowerCase() : '';
+    return word ? word.includes(searchText.toLocaleLowerCase()) : false;
+  });
+};
