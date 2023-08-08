@@ -62,6 +62,16 @@ module.exports = {
     // Disabled some accessibility rules
     'jsx-a11y/click-events-have-key-events': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
+
+    // Fix error by setting the htmlFor attribute on the label.
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
   },
   overrides: [
     // Avoid require checking in the server side.

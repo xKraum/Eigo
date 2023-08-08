@@ -21,6 +21,7 @@ const getDictionaryWordByName = (
 
 /**
  * Updates the description entries from the user's words array with the description and translation attributes of the dictionary words.
+ * The word name is added to the IWordData entries.
  *
  * @async
  * @param {IWord[]} userWords - An array of user's words containing entries to be updated.
@@ -59,25 +60,111 @@ export const getUpdatedUserWords = async (
 };
 
 /**
- * Sort an array of IWord objects based on their word property (case-insensitive).
- * @param words - The array of IWord objects to be sorted.
- * @param reverse - If true, the sorting will be in descending order (default is false for ascending order).
- * @returns A new array of IWord sorted by word name.
+ * Extracts and returns an array of IWordData entries from an array of IWord objects.
+ *
+ * @param words - The array of IWord objects.
+ * @returns An array of IWordData entries.
  */
-export const sortByWordName = (words: IWord[], reverse = false): IWord[] => {
-  const compareWords = (a: IWord, b: IWord) => {
+export const getWordDataEntries = (words: IWord[]) => {
+  const wordDataEntries = words.reduce(
+    (accumulator: IWordData[], word: IWord) => {
+      if (word?.entries?.length) {
+        return [...accumulator, ...word.entries];
+      }
+      return [...accumulator];
+    },
+    [],
+  );
+
+  return wordDataEntries;
+};
+
+/**
+ * Sort an array of IWordData objects based on their 'word' property (case-insensitive).
+ * @param words - The array of IWordData objects to be sorted.
+ * @param ascending - If true, the sorting will be in ascending order.
+ * @returns A new array of IWordData sorted by word name.
+ */
+const sortByWordName = (words: IWordData[], ascending = true): IWordData[] => {
+  const compareWords = (a: IWordData, b: IWordData) => {
     const wordA = a.word ? a.word.toLowerCase() : '';
     const wordB = b.word ? b.word.toLowerCase() : '';
 
-    if (wordA < wordB) {
-      return reverse ? 1 : -1;
+    if (wordA === wordB) {
+      return 0;
     }
-    if (wordA > wordB) {
-      return reverse ? -1 : 1;
-    }
-    return 0;
+
+    return ascending ? wordA.localeCompare(wordB) : wordB.localeCompare(wordA);
   };
 
   const sortedWords = [...words].sort(compareWords);
   return sortedWords;
+};
+
+/**
+ * Sort an array of IWordData objects based on their 'level' property (ascending or descending).
+ *
+ * @param words - The array of IWordData objects to be sorted.
+ * @param ascending - If true, the sorting will be in ascending order.
+ * @returns A new array of IWordData sorted by word level.
+ */
+const sortWordDataByWordLevel = (
+  words: IWordData[],
+  ascending = true,
+): IWordData[] => {
+  const compareWords = (a: IWordData, b: IWordData) => {
+    const levelA = a.level ?? 0;
+    const levelB = b.level ?? 0;
+
+    if (levelA === levelB) {
+      return 0;
+    }
+
+    return ascending ? levelB - levelA : levelA - levelB;
+  };
+
+  const sortedWordData = [...words].sort(compareWords);
+  return sortedWordData;
+};
+
+/**
+ * Sorts an array of IWordData objects based on the provided sorting options.
+ *
+ * @param wordDataList - The array of IWordData objects to be sorted.
+ * @param isAlphabetical - If true, sort by word name, if false, sort by word level.
+ * @param isAscending - If true, the sorting will be in ascending order.
+ * @returns A new array of IWordData sorted based on the chosen sorting options.
+ */
+export const getListSorted = (
+  wordDataList: IWordData[],
+  isAlphabetical: boolean,
+  isAscending: boolean,
+): IWordData[] => {
+  const wordDataListCopy = [...wordDataList];
+  return isAlphabetical
+    ? sortByWordName(wordDataListCopy, isAscending)
+    : sortWordDataByWordLevel(wordDataListCopy, isAscending);
+};
+
+/**
+ * Filters an array of IWordData objects based on the provided search text (case-insensitive).
+ *
+ * @param wordDataList - The array of IWordData objects to be filtered.
+ * @param searchText - The text to be used for filtering.
+ * @returns A new array of IWordData objects that include the search text in their word name.
+ */
+export const filterWordDataByText = (
+  wordDataList: IWordData[],
+  searchText: string,
+): IWordData[] => {
+  const wordDataListCopy = [...wordDataList];
+
+  if (!searchText) {
+    return wordDataListCopy;
+  }
+
+  return wordDataListCopy.filter((wordData: IWordData) => {
+    const word = wordData?.word ? wordData.word.toLocaleLowerCase() : '';
+    return word ? word.includes(searchText.toLocaleLowerCase()) : false;
+  });
 };
