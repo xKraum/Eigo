@@ -3,7 +3,7 @@ import { IFormattedDictionaryWord } from '../interfaces/formattedDictionary/IFor
 import { IWord } from '../interfaces/user/IUser';
 
 // FIXME: To change, temporary private IP.
-const BASE_URL = 'http://192.168.1.40:5000';
+const BASE_URL = process.env.REACT_APP_NODE_SERVER_URL;
 
 const config = {
   headers: {
