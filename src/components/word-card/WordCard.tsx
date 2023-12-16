@@ -20,6 +20,7 @@ const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
       ? 'translations spaced'
       : 'translations';
 
+  // NOTE: Use Fieldset?
   return (
     <div key={word + descriptionIndex} className="word-card">
       <div className="word-card__data">

@@ -99,6 +99,8 @@ app.post('/users/register', async (req, res) => {
   }
 });
 
+// TODO: Handle Error connecting to MongoDB.
+// FIXME: Eigo DB has to add the IP of the computer doing requests to it.
 app.get('/users/login', async (req, res) => {
   await handleUserLoginOrSessionReload(req, res, false);
 });

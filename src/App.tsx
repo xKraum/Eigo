@@ -1,16 +1,19 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import React, { useEffect, useState } from 'react';
+import * as PiIcons from 'react-icons/pi';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.scss';
 import { getUserAuthInfoCached } from './cache/cache';
 import ProtectedRoute from './components/ProtectedRoute';
+import IconProps from './components/icon/IconProps';
 import ModalAddWord from './components/modal/content/ModalAddWord';
 import NavigationLayout from './components/navigation-layout/NavigationLayout';
 import { NavigationRoutes } from './constants/navigation';
 import { useUserDispatch } from './hooks/useUserDispatch';
 import { IUser } from './interfaces/user/IUser';
+import CategoriesPage from './pages/CategoriesPage';
 import ListPage from './pages/ListPage';
 import LoginPage from './pages/LoginPage';
 import { RootState } from './redux/store';
@@ -45,6 +48,7 @@ const App: React.FC = () => {
               } else if (response?.status === 200) {
                 // Load user data into Redux.
                 const userResponse = response?.data?.user as IUser;
+                // NOTE: Triggers a re-render to load user session.
                 dispatchLoginUser(userResponse);
               }
             },
@@ -56,6 +60,7 @@ const App: React.FC = () => {
     loadUserSessionIfStored();
   }, [user, isUserAuthCached, dispatchLoginUser]);
 
+  // NOTE: This function is executed 4 times per route when StrictMode is enabled.
   const renderPage = (
     element: React.ReactNode,
     isLoginElement?: boolean,
@@ -72,6 +77,26 @@ const App: React.FC = () => {
       </ProtectedRoute>
     );
   };
+
+  const getIcons = (): IconProps[] => {
+    const getFilteredIconNames = (value: string) =>
+      Object.keys(PiIcons).filter((key) => key.includes(value));
+
+    const filteredIconNames = getFilteredIconNames('Bold');
+
+    if (filteredIconNames?.length) {
+      return filteredIconNames.map((name: string): IconProps => {
+        return {
+          name,
+          color: 'black',
+        };
+      });
+    }
+
+    return [];
+  };
+
+  const icons = getIcons();
 
   // Renders /login page if there is no user and its auth data is not cached.
   // Render selected page in page if there is user.
@@ -96,7 +121,7 @@ const App: React.FC = () => {
             />
             <Route
               path={NavigationRoutes.categories.path}
-              element={renderPage('Categories Page')}
+              element={renderPage(<CategoriesPage icons={icons} />)}
             />
             <Route
               path={NavigationRoutes.login.path}

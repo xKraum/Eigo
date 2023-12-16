@@ -1,22 +1,14 @@
 import React from 'react';
 import * as PiIcons from 'react-icons/pi';
 import { VscBlank } from 'react-icons/vsc';
-
-interface Icon {
-  name: string;
-  size?: number;
-  color?: string;
-  className?: string;
-  title?: string;
-  rotate?: 90 | 180 | 270;
-}
+import IconProps from './IconProps';
 
 /**
  * Wraps the React-Icons to get an icon from 'Phosphor Icons' based on its icon name.
  * @param name Icon name.
  * @returns A Phosphor Icon or an empty icon if the name is not found.
  */
-const Icon: React.FC<Icon> = ({
+const Icon: React.FC<IconProps> = ({
   name,
   size = 24,
   color = undefined,

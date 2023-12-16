@@ -1,0 +1,44 @@
+@import '../../utils/styles/variables.scss';
+
+.category-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: transparent;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  width: 64px;
+  height: 64px;
+  max-width: 64px;
+  max-height: 64px;
+
+  font-size: 10px;
+  color: $secondary-color;
+
+  svg {
+    width: 32px;
+    height: 32px;
+    transition: width 0.3s, height 0.3s;
+  }
+
+  span {
+    margin-top: 5px;
+  }
+
+  &:hover {
+    svg {
+      color: $primary-color !important;
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  &.hide {
+    display: none;
+  }
+}
