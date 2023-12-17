@@ -11,6 +11,7 @@ import IconProps from './components/icon/IconProps';
 import ModalAddWord from './components/modal/content/ModalAddWord';
 import NavigationLayout from './components/navigation-layout/NavigationLayout';
 import { NavigationRoutes } from './constants/navigation';
+import { IconType } from './constants/types/IconTypes';
 import { useUserDispatch } from './hooks/useUserDispatch';
 import { IUser } from './interfaces/user/IUser';
 import CategoriesPage from './pages/CategoriesPage';
@@ -79,10 +80,24 @@ const App: React.FC = () => {
   };
 
   const getIcons = (): IconProps[] => {
-    const getFilteredIconNames = (value: string) =>
-      Object.keys(PiIcons).filter((key) => key.includes(value));
+    /**
+     * Filters icon names by excluding specified masks.
+     *
+     * @param mask An array of strings representing masks to exclude icon names.
+     * @returns An array of filtered icon names.
+     */
+    const filterIconNamesWithoutMask = (mask: string[]) =>
+      Object.keys(PiIcons).filter(
+        (key) => !mask.some((value) => key.includes(value)),
+      );
 
-    const filteredIconNames = getFilteredIconNames('Bold');
+    const filteredIconNames = filterIconNamesWithoutMask([
+      IconType.Bold,
+      IconType.Duotone,
+      IconType.Fill,
+      IconType.Light,
+      IconType.Thin,
+    ]);
 
     if (filteredIconNames?.length) {
       return filteredIconNames.map((name: string): IconProps => {

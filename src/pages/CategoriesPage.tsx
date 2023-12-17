@@ -9,24 +9,17 @@ interface CategoriesPageProps {
   icons: IconProps[];
 }
 
-const initializeIconButtons = (icons: IconProps[]): IconButtonProps[] => {
-  if (icons) {
-    return icons.map((icon): IconButtonProps => {
-      return {
-        icon,
-        iconName: icon.name,
-        visible: true,
-      };
-    });
-  }
-
-  return [];
-};
-
 const CategoriesPage: React.FC<CategoriesPageProps> = ({ icons }) => {
   const [searchText, setSearchText] = useState('');
-  const [iconButtons, setIconButtons] = useState<IconButtonProps[]>(() =>
-    initializeIconButtons(icons),
+  const [iconButtons, setIconButtons] = useState<IconButtonProps[]>(
+    () =>
+      icons?.map(
+        (icon): IconButtonProps => ({
+          icon,
+          iconName: icon.name,
+          visible: true,
+        }),
+      ) || [],
   );
 
   // TODO: Add a delay to change the icons visibility?
